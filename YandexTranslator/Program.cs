@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,8 +47,8 @@ namespace YandexTranslator
                 try
                 {
                     var ApiResult = webClient.DownloadString($"{url}?key={key}&lang=en-ru&text={text}");
-                    var data = JsonConvert.DeserializeObject(ApiResult);
-                    result = data[0]["text"].ToString();
+                    var data = JsonConvert.DeserializeObject(ApiResult) as JObject;
+                    result = data["text"][0].ToString();
                     cache.AddText(text, result);
                 }
                 catch (Exception)
@@ -63,9 +64,13 @@ namespace YandexTranslator
         {
             static void Main(string[] args)
             {
-                string text = Console.ReadLine();
-                TextSearchAPI textSearch = new TextSearchAPI();
-                textSearch.Search(text);
+                    TextSearchAPI textSearch = new TextSearchAPI();
+                while (true)
+                {
+                    string text = Console.ReadLine();
+                    Console.WriteLine(textSearch.Search(text));
+                    Console.ReadKey();
+                }
             }
         }
     }
